@@ -3,26 +3,31 @@ import classes from './Patio.module.css';
 import {connect} from "react-redux";
 import {actionCreator as roomsAC} from "../../rootStore/rooms/actions";
 import {actionCreator as statusAC, positionType} from "../../rootStore/status/actions";
+import {actionCreator as callAC} from "../../rootStore/call/actions";
 import {fs_getRoomData, fs_leaveRoom} from "../../firebase/rooms/rooms";
 import {locationType} from "../../constants/constatns";
+import {db} from "../../firebase/firebaseInit";
 
 
 const Patio = props => {
     console.log('[Patio]');
-    props.located !== locationType.PATIO && props.history.replace(props.located);
-    if (props.user && !props.roomData && props.myRoomId) {
-        console.log(props.user, props.myRoomId);
-        fs_getRoomData(
+    useEffect(()=>{
+        if (props.myRoomId && props.user) {
+            let unsubscribe = fs_getRoomData(
             props.myRoomId,
             props.user.uid,
             {
                 storeRoomData: props.storeRoomData,
                 storePosition: props.storePosition
-            });
-    }
+            },
+            props.onSnapshotCounter);
+
+            return () => unsubscribe();
+        }
+    }, []);
+
     const leaveRoom = () => {
         fs_leaveRoom(props.myRoomId, props.user.uid, ()=>{
-            props.setLocation(locationType.FOYER);
             props.history.push(locationType.FOYER);
         })
     }
@@ -61,7 +66,7 @@ const mapStateToProps = state => {
         user: state.auth.user,
         myRoomId: state.status.myRoomId,
         roomData: state.status.roomData,
-        located: state.status.located
+        onSnapshotCounter: state.call.onSnapshotCounter
     }
 }
 
@@ -72,7 +77,7 @@ const mapDispatchToProps = dispatch => {
         storeRoomData: (roomData) => dispatch(statusAC.storeRoomData(roomData)),
         deleteRoomData: () => dispatch(statusAC.deleteRoomData()),
         storeMyRoomId: (roomId)=> dispatch(statusAC.setMyRoomId(roomId)),
-        setLocation: (location) => dispatch(statusAC.set_location(location))
+        count_onSnapshot: ()=> dispatch(callAC.count_onSnapshot()),
     }
 }
 

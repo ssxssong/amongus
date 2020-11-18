@@ -41,20 +41,22 @@ const App = (props) => {
                     <div style={{color:'white', margin:'1rem'}}>user.displayName :
                         {props.user ? props.user.displayName : ''}</div>
                     <div style={{color:'white', margin:'1rem'}}>user.nickname    :
-                        {props.user ? props.user.nickname : ''}</div>
+                        {props.nickname ? props.nickname : ''}</div>
                     <div style={{color:'white', margin:'1rem'}}>position         :
                         {props.position ? props.position : ''}</div>
                     <div style={{color:'white', margin:'1rem'}}>myRoomId         :
                         {props.myRoomId ? props.myRoomId : ''}</div>
+                    <div style={{color:'white', margin:'1rem'}}>onSnapshotCounter:
+                        {props.onSnapshotCounter ? props.onSnapshotCounter : ''}</div>
                 </div>
                 <button
                     onClick={()=>{
                         firebase.auth().signOut()
                             .then(() => {
+                                window.localStorage.clear();
                                 props.setDefautStatus();
                                 props.setDefautAuth();
                                 props.setDefautRooms();
-                                window.localStorage.clear();
                                 window.history.pushState(null, null, '/')
                                 window.location.reload();
                             })
@@ -90,7 +92,8 @@ const mapStateToProps = state => {
         position: state.status.position,
         myRoomId: state.status.myRoomId,
         nickname: state.status.nickname,
-        located: state.status.located
+        located: state.status.located,
+        onSnapshotCounter: state.call.onSnapshotCounter,
     }
 }
 

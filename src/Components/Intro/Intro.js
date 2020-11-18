@@ -9,13 +9,10 @@ import {locationType} from "../../constants/constatns";
 
 const Intro = props => {
     console.log('[Intro]');
-    // props.located !== locationType.HOME && props.history.replace(props.located);
 
     let intro = null;
     props.user ? intro = (
         <>
-            {/*<div className={classes.Title}>AMONG US</div>*/}
-            <Header history={props.history}/>
             <Start history={props.history}/>
         </>
     ) : intro = (

@@ -67,16 +67,19 @@ export const fs_getRoomList = (callback) => {
         .catch();
 }
 
-export const fs_getRoomData = (roomId, uid, callbacks) => {
-    db.collection(collections.ROOMS).doc(roomId)
+export const fs_getRoomData = (roomId, uid, callbacks, ctr) => {
+    return db.collection('ROOMS').doc(roomId)
         .onSnapshot((doc)=>{
-            const roomData = doc.data();
-            callbacks.storeRoomData(roomData);
-            // if (roomData.users[0].uid === uid) {
-            //     callbacks.storePosition(positionType.HOSTING);
-            // } else {
-            //     callbacks.storePosition(positionType.JOINING);
-            // }
+            console.log('############### onsnapshot running', ctr);
+            if (doc.exists) {
+                const roomData = doc.data();
+                callbacks.storeRoomData(roomData);
+                if (roomData.users[0].uid === uid) {
+                    callbacks.storePosition(positionType.HOSTING);
+                } else {
+                    callbacks.storePosition(positionType.JOINING);
+                }
+            }
         });
 }
 
@@ -88,7 +91,9 @@ export const fs_leaveRoom = (roomId, uid, callback) => {
             // if leaving user is last person, delete room doc
             if (doc.data().users.length === 1) {
                 roomRef.delete()
-                    .then()
+                    .then(()=>{
+                        callback();
+                    })
                     .catch();
             }
             // else, keep room doc
@@ -96,7 +101,10 @@ export const fs_leaveRoom = (roomId, uid, callback) => {
                 const updated_users = doc.data().users;
                 let index = null;
                 updated_users.forEach((userObj)=>{
-                    userObj.uid === uid ? index = updated_users.indexOf(userObj) : index = 'err';
+                    if (userObj.uid === uid) {
+                        index = updated_users.indexOf(userObj);
+                        console.log('USEROBJ', userObj);
+                    }
                 });
                 updated_users.splice(index, 1);
                 roomRef.update({

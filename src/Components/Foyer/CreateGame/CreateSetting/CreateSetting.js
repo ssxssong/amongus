@@ -45,7 +45,6 @@ const CreateSetting = props => {
             {
                 storeMyRoomId: props.storeMyRoomId,
                 go: ()=> {
-                    props.setLocation(locationType.PATIO);
                     props.history.push(locationType.PATIO);
                 }
             });
@@ -85,7 +84,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         storeMyRoomId: (roomId) => dispatch(statusAC.setMyRoomId(roomId)),
-        setLocation: (location)=> dispatch(statusAC.set_location(location))
+        storeNickName: (nickname) => dispatch(statusAC.storeNickName(nickname)),
     }
 }
 

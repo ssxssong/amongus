@@ -8,7 +8,6 @@ import {locationType} from "../../constants/constatns";
 
 const Corridor = props => {
     console.log('[Corridor]');
-    props.located !== locationType.CORRIDOR && props.history.replace(props.located);
     const [isLoaded, setIsLoaded] = useState(false);
     useEffect(()=>{!isLoaded && setIsLoaded(true);console.log('[Corridor, useEffect]')}, [isLoaded]);
     const getRoomList = () => {fs_getRoomList(props.storeRoomList);}
@@ -27,7 +26,6 @@ const Corridor = props => {
         };
         props.storeMyRoomId(roomId);
         fs_joinRoom(roomId, params, ()=> {
-            props.setLocation(locationType.PATIO);
             props.history.push(locationType.PATIO);
         });
     }
@@ -55,7 +53,6 @@ const Corridor = props => {
             <div className={classes.RoomList}>{roomList}</div>
             <button onClick={getRoomList} disabled={!props.user}>Refresh</button>
             <button onClick={()=>{
-                props.setLocation(locationType.FOYER);
                 props.history.push(locationType.FOYER);
             }}>back</button>
         </div>
@@ -81,7 +78,6 @@ const mapDispatchToProps = dispatch => {
         deleteMyRoomId: ()=> dispatch(statusAC.deleteMyRoomId()),
         deleteRoomData: () => dispatch(statusAC.deleteRoomData()),
         deletePosition: () => dispatch(statusAC.deletePosition()),
-        setLocation: (location)=> dispatch(statusAC.set_location(location))
     }
 }
 
