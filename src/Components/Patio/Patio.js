@@ -3,7 +3,7 @@ import classes from './Patio.module.css';
 import {connect} from "react-redux";
 import {actionCreator as roomsAC} from "../../rootStore/rooms/actions";
 import {actionCreator as statusAC, positionType} from "../../rootStore/status/actions";
-import {fs_getRoomData} from "../../firebase/rooms/rooms";
+import {fs_getRoomData, fs_leaveRoom} from "../../firebase/rooms/rooms";
 import {locationType} from "../../constants/constatns";
 
 
@@ -21,8 +21,10 @@ const Patio = props => {
             });
     }
     const leaveRoom = () => {
-        props.setLocation(locationType.FOYER);
-        props.history.push(locationType.FOYER);
+        fs_leaveRoom(props.myRoomId, props.user.uid, ()=>{
+            props.setLocation(locationType.FOYER);
+            props.history.push(locationType.FOYER);
+        })
     }
 
 

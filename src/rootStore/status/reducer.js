@@ -1,4 +1,5 @@
 import {actionTypes} from './actions';
+import {locationType} from "../../constants/constatns";
 
 const initialState = {
     position: null,
@@ -50,6 +51,15 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 located: action.location
+            }
+        case actionTypes.SET_DEFAULT:
+            return {
+                ...state,
+                position: null,
+                nickname: '',
+                myRoomId: null,
+                roomData: null,
+                located: null
             }
         default: break;
     }

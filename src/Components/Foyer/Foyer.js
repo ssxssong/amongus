@@ -14,10 +14,16 @@ import {locationType} from "../../constants/constatns";
 
 const Foyer = props => {
     console.log('[Foyer]');
-    props.located !== locationType.FOYER && props.history.replace(props.located);
-    const [mod, setMod] = useState(true)
+    const [mod, setMod] = useState(true);
     const [nick, setNick] = useState(props.nickname);
-    const inputChangedHandler = (event) => {setNick(event.target.value);};
+    if (props.located !== locationType.FOYER) {
+        props.history.replace(props.located);
+        return (<></>)
+    } else {
+        const inputChangedHandler = (event) => {
+
+            setNick(event.target.value);
+        };
     const modToggler = () => setMod(!mod);
 
     let foyer = null;
@@ -46,7 +52,9 @@ const Foyer = props => {
         foyer = <CreateSetting nickname={nick} history={props.history} modToggle={modToggler}/>;
     }
 
-    return (<>{foyer}</>);
+        return (<>{foyer}</>);
+    }
+
 };
 
 const mapStateToProps = state => {

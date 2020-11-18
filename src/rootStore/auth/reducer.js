@@ -14,6 +14,12 @@ const reducer = (state = initialState, action) => {
                 user: action.user,
                 stored: true
             }
+        case actionTypes.SET_DEFAULT:
+            return {
+                ...state,
+                user: null,
+                stored: false
+            }
         default: break;
     }
     return state;

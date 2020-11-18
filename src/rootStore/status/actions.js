@@ -7,6 +7,7 @@ export const actionTypes = {
     DELETE_ROOM_DATA: 'DELETE_ROOM_DATA',
     DELETE_POSITION: 'DELETE_POSITION',
     SET_LOCATION: 'SET_LOCATION',
+    SET_DEFAULT: 'SET_DEFAULT',
 }
 
 export const positionType = {
@@ -40,5 +41,8 @@ export const actionCreator = {
     },
     set_location: (location) => {
         return {type: actionTypes.SET_LOCATION, location: location}
+    },
+    set_default: () => {
+        return {type: actionTypes.SET_DEFAULT}
     }
 }

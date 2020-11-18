@@ -12,6 +12,11 @@ const reducer = (state = initialState, action) => {
                 ...state,
                 roomList: action.room
             }
+        case actionTypes.SET_DEFAULT:
+            return {
+                ...state,
+                roomList: null
+            }
         default: break;
     }
     return state;

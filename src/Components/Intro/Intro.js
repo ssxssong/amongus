@@ -11,15 +11,6 @@ const Intro = props => {
     console.log('[Intro]');
     // props.located !== locationType.HOME && props.history.replace(props.located);
 
-    // if not in patio
-    if (props.user && (props.nickname !== undefined)) {
-        if (props.position !== positionType.WAITING) {
-            props.storePosition(positionType.WAITING);
-            props.deleteMyRoomId();
-            props.deleteRoomData();
-        }
-    }
-
     let intro = null;
     props.user ? intro = (
         <>
