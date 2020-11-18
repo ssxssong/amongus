@@ -1,0 +1,37 @@
+.Description {
+    padding: 0 2rem 2rem 2rem;
+}
+.Description,
+.Description a{
+    color: rgba(47, 133, 208, 0.76);
+    font-size: 1.2rem;
+    text-align: center;
+    text-decoration: none;
+}
+
+.Description a:active,
+.Description a:hover {
+    text-decoration: none;
+}
+
+.Description p {
+    padding: .4rem 0;
+}
+
+.Link {
+    color: #007fc7;
+    font-size: 4.5rem;
+}
+
+.Link:hover {
+    color: #009fff;
+    text-decoration: none;
+}
+
+
+@media only screen and (max-width: 56.25em) {
+
+    .Description {
+        display: none;
+    }
+}

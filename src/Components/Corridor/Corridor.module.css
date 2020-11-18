@@ -1,0 +1,29 @@
+.Corridor {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.RoomList {
+    height: 50rem;
+    overflow-y: scroll;
+}
+.Room {
+    background-color: #007fc7;
+    width: 50rem;
+    height: 5rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 200;
+}
+
+.RoomName {
+    width: 30rem;
+}
+.Population {
+    width: 20rem;
+}

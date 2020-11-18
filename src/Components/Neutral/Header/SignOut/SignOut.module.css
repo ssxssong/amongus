@@ -1,0 +1,16 @@
+.SignOut {
+    width: 20rem;
+    height: 5rem;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.26);
+    background-color: transparent;
+    border: none;
+    font-family: 'Press Start 2P';
+    transition: all .5s ease-out;
+    font-size: 2rem;
+    z-index: 500;
+}
+
+.SignOut:hover {
+    color: white;
+}

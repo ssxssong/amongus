@@ -1,0 +1,63 @@
+*,
+*::after,
+*::before
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: inherit;
+}
+
+*:focus {
+    outline: none;
+}
+
+button {
+    cursor: grab;
+}
+
+/* 1200 < width < 1800 */
+/* 1rem = 10px */
+html {
+    font-size: 62.5%;
+}
+
+/* 1800 < width */
+/* 1rem = 12px */
+@media only screen and (min-width: 112.5em) {
+    html {
+        font-size: 75%;
+    }
+}
+
+/* 900 < width < 1200 */
+/* 1rem = 9px */
+@media only screen and (max-width: 75em) {
+    html {
+        font-size: 56.25%;
+    }
+}
+
+/* width < 900 */
+/* 1rem = 8px */
+@media only screen and (max-width: 56.25em) {
+    html {
+        font-size: 50%;
+    }
+}
+
+body {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Press Start 2P', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

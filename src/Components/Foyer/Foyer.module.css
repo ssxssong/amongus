@@ -1,0 +1,33 @@
+.Foyer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.Foyer > * {
+    width: 45rem;
+    height: 6rem;
+    margin: 1rem 0;
+    color: white;
+    font-size: 4rem;
+    background-color: transparent;
+    border: 2px solid white;
+    border-radius: 5px ;
+}
+
+
+button:hover,
+button:active {
+    color: coral;
+    border-color: coral;
+}
+
+.NicknameInput {
+    width: 30rem;
+    font-size: 3rem;
+    color: white;
+    text-align: center;
+    margin-bottom: 3rem;
+}
