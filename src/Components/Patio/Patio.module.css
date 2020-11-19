@@ -1,3 +1,24 @@
 .Patio {
     z-index: 100;
 }
+
+.RoomData {
+    position: absolute;
+    top: 10rem;
+    left: 2rem;
+}
+
+.Users {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.User {
+    margin-bottom: 3rem;
+}
+
+.Setting {
+    margin-bottom: 10rem;
+}

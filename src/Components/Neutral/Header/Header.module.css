@@ -1,6 +1,14 @@
 .Header {
+    width: 100vw;
+    height: 5rem;
     position: absolute;
     top: 0;
-    right: 0;
-    z-index: 300;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+

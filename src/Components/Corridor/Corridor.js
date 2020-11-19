@@ -3,15 +3,24 @@ import {connect} from 'react-redux';
 import classes from './Corridor.module.css';
 import {actionCreator as roomsAC} from "../../rootStore/rooms/actions";
 import {actionCreator as statusAC} from "../../rootStore/status/actions";
-import {fs_getRoomList, fs_joinRoom} from "../../firebase/rooms/rooms";
+import {fs_getRoomList, fs_joinRoom} from "../../firebase/fs_rooms/rooms";
 import {locationType} from "../../constants/constatns";
 
 const Corridor = props => {
     console.log('[Corridor]');
     const [isLoaded, setIsLoaded] = useState(false);
     useEffect(()=>{!isLoaded && setIsLoaded(true);console.log('[Corridor, useEffect]')}, [isLoaded]);
-    const getRoomList = () => {fs_getRoomList(props.storeRoomList);}
 
+    if (props.locatedAt !== locationType.CORRIDOR) {
+        console.log('[RELOCATION]');
+        props.history.push(props.locatedAt);
+        return null;
+    }
+
+    const getRoomList = () => {
+        console.log('[GETTING ROOMLIST]')
+        fs_getRoomList(props.storeRoomList);
+    };
     !isLoaded && getRoomList();
 
     const joinRoom = (e) => {
@@ -25,6 +34,7 @@ const Corridor = props => {
             displayName: props.user.displayName
         };
         props.storeMyRoomId(roomId);
+        props.setLocation(locationType.PATIO);
         fs_joinRoom(roomId, params, ()=> {
             props.history.push(locationType.PATIO);
         });
@@ -53,6 +63,7 @@ const Corridor = props => {
             <div className={classes.RoomList}>{roomList}</div>
             <button onClick={getRoomList} disabled={!props.user}>Refresh</button>
             <button onClick={()=>{
+                props.setLocation(locationType.FOYER);
                 props.history.push(locationType.FOYER);
             }}>back</button>
         </div>
@@ -67,7 +78,7 @@ const mapStateToProps = state => {
         myRoomId: state.status.myRoomId,
         nickname: state.status.nickname,
         roomData: state.status.roomData,
-        located: state.status.located
+        locatedAt: state.status.locatedAt
     }
 }
 
@@ -78,6 +89,7 @@ const mapDispatchToProps = dispatch => {
         deleteMyRoomId: ()=> dispatch(statusAC.deleteMyRoomId()),
         deleteRoomData: () => dispatch(statusAC.deleteRoomData()),
         deletePosition: () => dispatch(statusAC.deletePosition()),
+        setLocation: (location)=> dispatch(statusAC.set_location(location))
     }
 }
 

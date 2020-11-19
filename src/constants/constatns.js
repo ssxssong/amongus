@@ -1,6 +1,8 @@
 export const locationType = {
-    HOME: '/',
+    INTRO: '/intro',
     FOYER: '/foyer',
     CORRIDOR: '/corridor',
     PATIO: '/patio',
-}
+    ESCAPE: '/escape',
+    HOME: '/',
+};

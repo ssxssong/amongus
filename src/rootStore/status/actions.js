@@ -8,6 +8,8 @@ export const actionTypes = {
     DELETE_POSITION: 'DELETE_POSITION',
     SET_LOCATION: 'SET_LOCATION',
     SET_DEFAULT: 'SET_DEFAULT',
+    NOTICE_ESCAPING: 'NOTICE_ESCAPING',
+    NOTICE_NOT_ESCAPING: 'NOTICE_NOT_ESCAPING',
 }
 
 export const positionType = {
@@ -43,6 +45,13 @@ export const actionCreator = {
         return {type: actionTypes.SET_LOCATION, location: location}
     },
     set_default: () => {
+        console.log('setting deafault status');
         return {type: actionTypes.SET_DEFAULT}
+    },
+    notice_escaping: () => {
+        return {type: actionTypes.NOTICE_ESCAPING}
+    },
+    notice_not_escaping: () => {
+        return {type: actionTypes.NOTICE_NOT_ESCAPING}
     }
 }

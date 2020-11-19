@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import classes from './CreateSetting.module.css';
 import {connect} from "react-redux";
-import {fs_createRoom} from "../../../../firebase/rooms/rooms";
-import {actionCreator as statusAC, positionType} from "../../../../rootStore/status/actions";
-import {locationType} from "../../../../constants/constatns";
+import {fs_createRoom} from "../../../firebase/fs_rooms/rooms";
+import {actionCreator as statusAC} from "../../../rootStore/status/actions";
+import {locationType} from "../../../constants/constatns";
 
 const CreateSetting = props => {
     const [setting, setSetting] = useState({
@@ -33,18 +33,18 @@ const CreateSetting = props => {
         }
     }
 
-    console.log(props.nickname);
     const create = () => {
         const params = {
             user: props.user,
             nickname: props.nickname,
             setting: setting,
-        }
+        };
         fs_createRoom(
             params,
             {
                 storeMyRoomId: props.storeMyRoomId,
                 go: ()=> {
+                    props.setLocation(locationType.PATIO);
                     props.history.push(locationType.PATIO);
                 }
             });
@@ -85,6 +85,7 @@ const mapDispatchToProps = dispatch => {
     return {
         storeMyRoomId: (roomId) => dispatch(statusAC.setMyRoomId(roomId)),
         storeNickName: (nickname) => dispatch(statusAC.storeNickName(nickname)),
+        setLocation: (location)=> dispatch(statusAC.set_location(location)),
     }
 }
 

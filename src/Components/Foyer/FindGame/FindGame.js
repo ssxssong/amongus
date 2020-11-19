@@ -8,6 +8,7 @@ import {locationType} from "../../../constants/constatns";
 const FindGame = props => {
     const findGame = () => {
         props.storeNickName(props.nick);
+        props.setLocation(locationType.CORRIDOR);
         props.history.push(locationType.CORRIDOR);
     };
 
@@ -25,6 +26,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         storeNickName: (nickname) => dispatch(statusAC.storeNickName(nickname)),
+        setLocation: (location)=> dispatch(statusAC.set_location(location)),
     }
 }
 

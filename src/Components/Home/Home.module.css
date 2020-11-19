@@ -1,4 +1,4 @@
-.Intro {
+.Home {
     width: 90%;
     height: 90%;
     display: flex;
@@ -6,4 +6,10 @@
     justify-content: center;
     align-items: center;
     z-index: 100;
+}
+
+.Title {
+    color: rgba(255, 13, 174, 0.78);
+    font-size: 4.5rem;
+    padding: 2rem;
 }

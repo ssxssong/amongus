@@ -2,29 +2,20 @@ import React from 'react';
 import { connect } from 'react-redux';
 import SignIn from "./SignIn/SignIn";
 import Start from './Start/Start';
-import Header from "../Neutral/Header/Header";
 import classes from './Intro.module.css';
-import {actionCreator as statusAC, positionType} from "../../rootStore/status/actions";
 import {locationType} from "../../constants/constatns";
 
 const Intro = props => {
     console.log('[Intro]');
 
-    let intro = null;
-    props.user ? intro = (
-        <>
-            <Start history={props.history}/>
-        </>
-    ) : intro = (
-        <>
-            <div className={classes.Title}>AMONG US</div>
-            <SignIn/>
-        </>
-    );
-
+    if (props.locatedAt !== locationType.INTRO) {
+        console.log('[RELOCATION]');
+        props.history.push(props.locatedAt);
+        return null;
+    }
     return (
         <div className={classes.Intro}>
-            {intro}
+            {props.user.uid ?<Start dis={props.user.uid} history={props.history}/> : 'LOADING'}
         </div>
     )
 };
@@ -32,18 +23,9 @@ const Intro = props => {
 const mapStateToProps = state => {
     return {
         user: state.auth.user,
-        position: state.status.position,
-        nickname: state.status.nickname,
-        located: state.status.located
+        locatedAt: state.status.locatedAt
     }
 }
 
-const mapDispatchToProps = dispatch => {
-    return {
-        storePosition: (position) => dispatch(statusAC.store_Position(position)),
-        deleteMyRoomId: ()=> dispatch(statusAC.deleteMyRoomId()),
-        deleteRoomData: () => dispatch(statusAC.deleteRoomData()),
-    }
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(Intro);
+export default connect(mapStateToProps)(Intro);

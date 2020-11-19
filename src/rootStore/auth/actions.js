@@ -8,6 +8,7 @@ export const actionCreator = {
         return {type: actionTypes.SIGN_IN, user: user}
     },
     set_default: ()=> {
+        console.log('setting deafault auth');
         return {type: actionTypes.SET_DEFAULT}
     },
 }

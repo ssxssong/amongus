@@ -2,11 +2,12 @@ import {actionTypes} from './actions';
 import {locationType} from "../../constants/constatns";
 
 const initialState = {
+    locatedAt: locationType.HOME,
     position: null,
     nickname: '',
     myRoomId: null,
     roomData: null,
-    located: null
+    escaping: false,
 };
 
 const reducer = (state = initialState, action) => {
@@ -50,7 +51,7 @@ const reducer = (state = initialState, action) => {
         case actionTypes.SET_LOCATION:
             return {
                 ...state,
-                located: action.location
+                locatedAt: action.location
             }
         case actionTypes.SET_DEFAULT:
             return {
@@ -59,7 +60,17 @@ const reducer = (state = initialState, action) => {
                 nickname: '',
                 myRoomId: null,
                 roomData: null,
-                located: null
+                locatedAt: locationType.HOME
+            }
+        case actionTypes.NOTICE_ESCAPING:
+            return {
+                ...state,
+                escaping: true
+            }
+        case actionTypes.NOTICE_NOT_ESCAPING:
+            return {
+                ...state,
+                escaping: false
             }
         default: break;
     }

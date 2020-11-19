@@ -1,86 +1,72 @@
 import React, {useEffect} from 'react';
 import classes from './App.module.css';
-import { Route, Switch } from 'react-router-dom';
+import {Route, Switch} from 'react-router-dom';
+
+// Compo
+import Header from "./Components/Neutral/Header/Header";
+import Status from "./Components/Neutral/Status/Status";
+import Home from "./Components/Home/Home";
 import Intro from "./Components/Intro/Intro";
-import BackgroundSketch from "./Memo/BackgroundSketch/BackgroundSketch";
 import Foyer from "./Components/Foyer/Foyer";
 import Patio from "./Components/Patio/Patio";
 import Corridor from "./Components/Corridor/Corridor";
+import Escape from "./Components/Neutral/Escape/Escape";
+import BackgroundSketch from "./Memo/BackgroundSketch/BackgroundSketch";
+
 import {useAuthState} from "react-firebase-hooks/auth";
 import {auth} from "./firebase/firebaseInit";
-import {connect} from "react-redux";
-import {actionCreator} from "./rootStore/auth/actions";
-import {actionCreator as statusAC} from './rootStore/status/actions';
+
 import {actionCreator as authAC} from './rootStore/auth/actions';
-import {actionCreator as roomsAC} from './rootStore/rooms/actions';
-import firebase from "firebase/app";
+import {actionCreator as statusAC} from "./rootStore/status/actions";
 import {locationType} from "./constants/constatns";
+import {Beforeunload} from "react-beforeunload";
+import {connect} from "react-redux";
+import {userConnection} from "./firebase/realtime/connection/connection";
+
 
 const App = (props) => {
-    console.log('[App]');
+    console.log('[AppWrap]');
     const [user] = useAuthState(auth);
     useEffect(()=>{
-        (user && !props.stored) && props.storeUser(user);
+        (user && !props.stored && !props.escaping) && props.storeUser(user);
     });
 
+    // user connection listener
+    if(props.user.uid) {
+        userConnection(props.user.uid);
+    }
+
+    const current_path = window.location.pathname;
+    const showHeader = (
+      current_path !== locationType.HOME &&
+      current_path !== locationType.INTRO &&
+      current_path !== locationType.ESCAPE
+    );
+
+    if (current_path !== locationType.ESCAPE && props.escaping) {
+        props.noticeNotEscaping();
+    }
+
     return (
-        <>
+        <Beforeunload onBeforeunload={(e)=>{}}>
             <div className={classes.App}>
+                {showHeader ? <Header/> : null}
+                <Status/>
                 <div className={classes.BackgroundSketch}>
                     <BackgroundSketch/>
                 </div>
-                <div
-                    style={{
-                        color:'white',
-                        position: 'absolute',
-                        bottom: '10rem',
-                        left: '1rem',
-                        fontSize: '2rem'}}>
-                    <div style={{color:'white', margin:'1rem'}}>user.uid         :
-                        {props.user ? props.user.uid : ''}</div>
-                    <div style={{color:'white', margin:'1rem'}}>user.displayName :
-                        {props.user ? props.user.displayName : ''}</div>
-                    <div style={{color:'white', margin:'1rem'}}>user.nickname    :
-                        {props.nickname ? props.nickname : ''}</div>
-                    <div style={{color:'white', margin:'1rem'}}>position         :
-                        {props.position ? props.position : ''}</div>
-                    <div style={{color:'white', margin:'1rem'}}>myRoomId         :
-                        {props.myRoomId ? props.myRoomId : ''}</div>
-                    <div style={{color:'white', margin:'1rem'}}>onSnapshotCounter:
-                        {props.onSnapshotCounter ? props.onSnapshotCounter : ''}</div>
-                </div>
-                <button
-                    onClick={()=>{
-                        firebase.auth().signOut()
-                            .then(() => {
-                                window.localStorage.clear();
-                                props.setDefautStatus();
-                                props.setDefautAuth();
-                                props.setDefautRooms();
-                                window.history.pushState(null, null, '/')
-                                window.location.reload();
-                            })
-                            .catch((error) => console.log(error));
-                    }}
-                    style={{
-                        position: 'absolute',
-                        bottom: '0',
-                        right: '0'
-                    }}>
-                    ESCAPE
-                </button>
 
                 <Switch>
-                    <Route path='/' exact component={Intro}/>
-                    <Route path='/foyer' exact component={Foyer} history={props.history}/>
-                    <Route path='/corridor' exact component={Corridor} history={props.history}/>
-                    <Route path='/patio' exact component={Patio} history={props.history}/>
+                    <Route path={locationType.HOME} exact component={Home} history={props.history}/>
+                    <Route path={locationType.INTRO} exact component={Intro} history={props.history}/>
+                    <Route path={locationType.FOYER} exact component={Foyer} history={props.history}/>
+                    <Route path={locationType.CORRIDOR} exact component={Corridor} history={props.history}/>
+                    <Route path={locationType.PATIO} exact component={Patio} history={props.history}/>
+                    <Route path={locationType.ESCAPE} exact component={Escape} history={props.history}/>
                 </Switch>
 
-
-
             </div>
-        </>
+        </Beforeunload>
     );
 }
 
@@ -89,21 +75,17 @@ const mapStateToProps = state => {
     return {
         user: state.auth.user,
         stored: state.auth.stored,
-        position: state.status.position,
-        myRoomId: state.status.myRoomId,
-        nickname: state.status.nickname,
-        located: state.status.located,
-        onSnapshotCounter: state.call.onSnapshotCounter,
+        escaping: state.status.escaping
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        storeUser: (user) => dispatch(actionCreator.store_user(user)),
-        setLocation: (location)=> dispatch(statusAC.set_location(location)),
-        setDefautStatus: () => dispatch(statusAC.set_default()),
-        setDefautAuth: () => dispatch(authAC.set_default()),
-        setDefautRooms: () => dispatch(roomsAC.set_default()),
+        storeUser: (user) => {
+            console.log('################ storing user ################');
+            dispatch(authAC.store_user(user));
+        },
+        noticeNotEscaping: () => dispatch(statusAC.notice_not_escaping()),
     }
 }
 

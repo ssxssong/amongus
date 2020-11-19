@@ -8,6 +8,7 @@ export const actionCreator = {
         return {type: actionTypes.STORE_ROOM_LIST, room: room}
     },
     set_default: () => {
+        console.log('setting deafault rooms');
         return {type: actionTypes.SET_DEFAULT}
     }
 }
