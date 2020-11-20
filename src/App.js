@@ -22,8 +22,7 @@ import {locationType} from "./constants/constatns";
 import {Beforeunload} from "react-beforeunload";
 import {connect} from "react-redux";
 import {userConnection} from "./firebase/realtime/connection/connection";
-import {fs_leaveRoom} from "./firebase/fs_rooms/rooms";
-import firebase from "firebase";
+import {actionCreator as roomsAC} from "./rootStore/rooms/actions";
 
 
 const App = (props) => {
@@ -33,7 +32,6 @@ const App = (props) => {
         (user && !props.stored && !props.escaping) && props.storeUser(user);
     });
 
-    // user connection listener
     if(props.user.uid) {
         userConnection(props.user.uid);
     }
@@ -49,15 +47,17 @@ const App = (props) => {
         props.noticeNotEscaping();
     }
 
-    console.log(new Date())
-
     return (
         <Beforeunload onBeforeunload={(e)=>{
-            alert(user.toString());
         }}>
             <div className={classes.App}>
                 {showHeader ? <Header/> : null}
                 <Status/>
+                {/*{user ? <div style={{*/}
+                {/*    color:'white',*/}
+                {/*}}>'user auth exists.'</div>: <div style={{*/}
+                {/*    color:'white',*/}
+                {/*}}>'user auth doesn't exists.'</div>}*/}
                 <div className={classes.BackgroundSketch}>
                     <BackgroundSketch/>
                 </div>
@@ -92,6 +92,9 @@ const mapDispatchToProps = dispatch => {
             dispatch(authAC.store_user(user));
         },
         noticeNotEscaping: () => dispatch(statusAC.notice_not_escaping()),
+        setDefaultStatus: () => dispatch(statusAC.set_default()),
+        setDefaultAuth: () => dispatch(authAC.set_default()),
+        setDefaultRooms: () => dispatch(roomsAC.set_default()),
     }
 }
 

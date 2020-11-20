@@ -38,9 +38,33 @@ const Patio = props => {
             setSV({...snapshot.val()});
         });
 
-
+        const statusRef = rdb.ref('/status/users')
+            statusRef.on('value', (snapshot)=>{
+                const users = snapshot.val();
+                Object.keys(users).forEach((user)=>{
+                    if (users[user].state === 'offline') {
+                        console.log('function invoking', user)
+                        const tempTimestampRef = rdb.ref('/tempTimestamp')
+                        tempTimestampRef.set(
+                            firebase.database.ServerValue.TIMESTAMP, () => {
+                                tempTimestampRef.once('value').then((s) => {
+                                    console.log(s.val() - users[user].last_changed + 30000);
+                                    if ((s.val() - users[user].last_changed + 30000) > 0) {
+                                        console.log('여기', user)
+                                        rdb.ref('/rooms/' + props.myRoomId + '/avatars/' + user)
+                                            .remove().then();
+                                        fs_leaveRoom(props.myRoomId, user, {
+                                            deletePosition: props.deletePosition,
+                                            go: ()=>{}
+                                        })
+                                    }
+                                });
+                            });
+                        }
+                    });
+                });
         // return roomRef.off();
-    }, [])
+    }, []);
     const [snapshotVal, setSV] = useState(null);
     if (props.locatedAt !== locationType.PATIO) {
         console.log('[RELOCATION]');
