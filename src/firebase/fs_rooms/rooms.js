@@ -1,6 +1,7 @@
-import {db} from "../firebaseInit";
+import {db, rdb} from "../firebaseInit";
 import firebase from "firebase/app";
 import {positionType} from "../../rootStore/status/actions";
+import {rdb_createRoom, rdb_joinRoom} from "../rdb_rooms/rooms";
 
 const collections = {
     ROOMS: 'ROOMS'
@@ -24,6 +25,7 @@ export const fs_createRoom = (params, callbacks) => {
     db.collection(collections.ROOMS)
         .add(data)
         .then((docRef)=>{
+            rdb_createRoom(docRef.id, params.user.uid)
             callbacks.storeMyRoomId(docRef.id);
             callbacks.go();
         })
@@ -53,6 +55,7 @@ export const fs_joinRoom = (roomId, params, callback_go) => {
                     roomRef.update({
                         'users': currentUsers
                     }).then(() => {
+                        rdb_joinRoom(roomId, params.uid);
                         callback_go();
                     }).catch();
                 } else {
@@ -61,7 +64,6 @@ export const fs_joinRoom = (roomId, params, callback_go) => {
             }
         })
         .catch()
-
 }
 
 export const fs_getRoomList = (callback) => {

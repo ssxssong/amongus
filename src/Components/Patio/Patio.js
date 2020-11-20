@@ -1,10 +1,16 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import classes from './Patio.module.css';
 import {connect} from "react-redux";
-import {actionCreator as statusAC} from "../../rootStore/status/actions";
+import {actionCreator as statusAC, positionType} from "../../rootStore/status/actions";
 import {actionCreator as callAC} from "../../rootStore/call/actions";
 import {fs_getRoomData, fs_leaveRoom} from "../../firebase/fs_rooms/rooms";
+import {rdb_leaveRoom} from "../../firebase/rdb_rooms/rooms";
 import {locationType} from "../../constants/constatns";
+
+import Lobby from "./Lobby/Lobby";
+import {rdb} from "../../firebase/firebaseInit";
+import firebase from "firebase/app";
+import 'firebase/database';
 
 
 const Patio = props => {
@@ -26,14 +32,24 @@ const Patio = props => {
         }
     }, []);
 
+    useEffect(()=>{
+        const roomRef = rdb.ref('/rooms/' + props.myRoomId);
+        roomRef.on('value', (snapshot) => {
+            setSV({...snapshot.val()});
+        });
+
+
+        // return roomRef.off();
+    }, [])
+    const [snapshotVal, setSV] = useState(null);
     if (props.locatedAt !== locationType.PATIO) {
         console.log('[RELOCATION]');
         props.history.push(props.locatedAt);
         return null;
     }
-
     const leaveRoom = () => {
         props.setLocation(locationType.FOYER);
+        rdb_leaveRoom(props.myRoomId, props.user.uid);
         fs_leaveRoom(props.myRoomId, props.user.uid, {
             deletePosition: props.deletePosition,
             go: () => props.history.push(locationType.FOYER)
@@ -59,6 +75,14 @@ const Patio = props => {
             return <div key={ctr} style={{color:'white'}}>{key} : {props.roomData.setting[key].value}</div>
         });
     }
+    //
+    // let showLobby = false;
+    // if (!snapshotVal) {
+    //     // if (snapshotVal.avatars[props.user.uid]) {
+    //     //     showLobby = true;
+    //     // }
+    //     console.log(snapshotVal);
+    // }
 
     return (
         <div className={classes.Patio}>
@@ -66,6 +90,7 @@ const Patio = props => {
                 <div className={classes.Setting}>{roomData.setting && roomData.setting}</div>
                 <div className={classes.Users}>{roomData.user && roomData.user}</div>
             </div>
+            {snapshotVal && <Lobby snapshot={snapshotVal}/>}
             <button onClick={leaveRoom}>Leave</button>
         </div>
     );
@@ -78,6 +103,7 @@ const mapStateToProps = state => {
         roomData: state.status.roomData,
         onSnapshotCounter: state.call.onSnapshotCounter,
         locatedAt: state.status.locatedAt,
+        position: state.status.position
     }
 }
 

@@ -1,0 +1,9 @@
+.Lobby {
+    width: 70vw;
+    height: 70vh;
+    z-index: 1000;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

@@ -22,6 +22,8 @@ import {locationType} from "./constants/constatns";
 import {Beforeunload} from "react-beforeunload";
 import {connect} from "react-redux";
 import {userConnection} from "./firebase/realtime/connection/connection";
+import {fs_leaveRoom} from "./firebase/fs_rooms/rooms";
+import firebase from "firebase";
 
 
 const App = (props) => {
@@ -47,8 +49,12 @@ const App = (props) => {
         props.noticeNotEscaping();
     }
 
+    console.log(new Date())
+
     return (
-        <Beforeunload onBeforeunload={(e)=>{}}>
+        <Beforeunload onBeforeunload={(e)=>{
+            alert(user.toString());
+        }}>
             <div className={classes.App}>
                 {showHeader ? <Header/> : null}
                 <Status/>

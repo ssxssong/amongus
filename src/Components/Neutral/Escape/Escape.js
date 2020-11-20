@@ -10,7 +10,7 @@ import {fs_leaveRoom} from "../../../firebase/fs_rooms/rooms";
 const Escape = props => {
     props.noticeEscaping();
     return <div style={{
-        zIndex: '500',
+        zIndex: '9999',
     }}>
         <button onClick={()=>{props.history.push(props.locatedAt)}}>BACK</button>
         <button

@@ -6,3 +6,7 @@ export const locationType = {
     ESCAPE: '/escape',
     HOME: '/',
 };
+
+export const rdb_path = {
+
+}
