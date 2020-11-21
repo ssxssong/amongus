@@ -1,18 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+
+// hoc
 import {BrowserRouter} from 'react-router-dom';
 import {Provider} from 'react-redux';
-import {persistor, store} from "./rootStore/store";
 import {PersistGate} from "redux-persist/integration/react";
+import {persistor, rootStore} from "./redux_store/rootStore";
+import {Beforeunload} from "react-beforeunload";
+
+import App from './App';
 
 const app = (
-    <Provider store={store}>
+    <Provider store={rootStore}>
         <PersistGate loading={null} persistor={persistor}>
             <BrowserRouter basename='/'>
-                <App/>
+                <Beforeunload onBeforeunload={(e) => {}}>
+                    <App/>
+                </Beforeunload>
             </BrowserRouter>
         </PersistGate>
     </Provider>

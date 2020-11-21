@@ -1,11 +1,11 @@
 import React from 'react';
 import firebase from "firebase/app";
-import {actionCreator as authAC, actionCreator} from "../../../rootStore/auth/actions";
-import {actionCreator as statusAC} from "../../../rootStore/status/actions";
-import {actionCreator as roomsAC} from "../../../rootStore/rooms/actions";
+import {actionCreator as authAC, actionCreator} from "../../../redux_store/auth/actions";
+import {actionCreator as statusAC} from "../../../redux_store/status/actions";
+import {actionCreator as roomsAC} from "../../../redux_store/rooms/actions";
 import {connect} from "react-redux";
-import {locationType} from "../../../constants/constatns";
-import {fs_leaveRoom} from "../../../firebase/fs_rooms/rooms";
+import {locationType} from "../../../utils/constatns";
+import {fs_leaveRoom} from "../../../firebase/firestore/rooms";
 
 const Escape = props => {
     props.noticeEscaping();
