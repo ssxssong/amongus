@@ -2,6 +2,7 @@ import {rdb} from "../Init";
 
 const ROOMS = '/rooms/';
 const AVATARS = '/avatars/';
+const POSITION = '/position'
 
 export const rdb_createRoom = (roomId, uid) => {
     const userStatusDatabaseRef = rdb.ref(ROOMS + roomId + AVATARS + uid);
@@ -13,14 +14,14 @@ export const rdb_createRoom = (roomId, uid) => {
     });
 }
 
-export const rdb_joinRoom = (roomId, uid) => {
+export const rdb_joinRoom = (roomId, uid, callback) => {
     const userStatusDatabaseRef = rdb.ref(ROOMS + roomId + AVATARS + uid);
     userStatusDatabaseRef.set({
-        position : {
+        position: {
             x: 50,
             y: 50
         }
-    })
+    }).then(()=>callback && callback());
 }
 
 export const rdb_leaveRoom = (roomId, uid) => {
@@ -29,12 +30,10 @@ export const rdb_leaveRoom = (roomId, uid) => {
 }
 
 export const rdb_update_position = (roomId, uid, position) => {
-    const userStatusDatabaseRef = rdb.ref(ROOMS + roomId + AVATARS + uid);
+    const userStatusDatabaseRef = rdb.ref(ROOMS + roomId + AVATARS + uid + POSITION);
     userStatusDatabaseRef.set({
-        position : {
             x: position.x,
             y: position.y
-        }
     })
 }
 

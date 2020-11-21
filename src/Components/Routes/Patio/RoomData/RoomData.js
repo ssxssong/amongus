@@ -16,7 +16,7 @@ const RoomData = props => {
                     storePosition: props.storePosition
                 });
 
-            // clear
+            // // clear
             return () => unsubscribe();
         }
     }, []);

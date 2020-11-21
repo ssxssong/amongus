@@ -28,6 +28,7 @@ export const actionCreator = {
         return {type: actionTypes.DELETE_MYROOM_ID}
     },
     storeRoomData: (roomData) => {
+        console.log('storing roomData');
         return {type: actionTypes.STORE_ROOM_DATA, roomData: roomData}
     },
     deleteRoomData: () => {

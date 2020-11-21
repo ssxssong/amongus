@@ -1,16 +1,16 @@
 import {rdb} from "../Init";
-import {timestamp} from "../Init";
 import {fs_leaveRoom} from "../firestore/rooms";
+import firebase from "firebase/app";
 
 export const rdb_user_connection = (uid) => {
     const userStatusDatabaseRef = rdb.ref('/status/users/' + uid);
     const isOfflineForDatabase = {
         state: 'offline',
-        last_changed: timestamp,
+        last_changed: firebase.database.ServerValue.TIMESTAMP,
     };
     const isOnlineForDatabase = {
         state: 'online',
-        last_changed: timestamp,
+        last_changed: firebase.database.ServerValue.TIMESTAMP,
     };
     rdb.ref('.info/connected')
         .on('value', function(snapshot) {
@@ -32,11 +32,12 @@ export const rdb_subscribe_usersConnectionData = (roomId, deletePosition) => {
         // if a user disconnected over 30sec, delete user data
         Object.keys(users).forEach((user) => {
             if (users[user].state === 'offline') {
+                console.log(user);
                 const tempTimestampRef = rdb.ref('/tempTimestamp')
                 tempTimestampRef.set(
-                    timestamp, () => {
+                    firebase.database.ServerValue.TIMESTAMP, () => {
                         tempTimestampRef.once('value').then((s) => {
-                            if ((s.val() - users[user].last_changed + 30000) > 0) {
+                            if ((s.val() - users[user].last_changed - 30000) > 0) {
                                 rdb.ref('/rooms/' + roomId + '/avatars/' + user)
                                     .remove().then();
                                 fs_leaveRoom(roomId, user, {

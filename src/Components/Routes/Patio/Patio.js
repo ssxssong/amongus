@@ -13,6 +13,7 @@ import {locationType} from "../../../utils/constatns";
 import RoomData from "./RoomData/RoomData";
 import LobbySketch from "./Lobby/LobbySketch";
 import KeyManager from "./KeyManager/KeyManager";
+import {rdb} from "../../../firebase/Init";
 
 
 const Patio = props => {
@@ -44,17 +45,10 @@ const Patio = props => {
         });
     };
 
-
-    if (roomData && roomData.avatars && !showLobby) {
-        setShowLobby(true);
-    } else {
-        showLobby && setShowLobby(false);
-    }
-
     return <div className={classes.Patio}>
         <RoomData/>
 
-        {showLobby &&
+        {roomData &&
         <KeyManager
             component={LobbySketch}
             roomData={roomData}

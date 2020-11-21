@@ -1,4 +1,4 @@
-import {db, rdb} from "../Init";
+import {db} from "../Init";
 import firebase from "firebase/app";
 import {positionType} from "../../utils/constatns";
 
@@ -56,8 +56,7 @@ export const fs_joinRoom = (roomId, params, callback) => {
                     roomRef.update({
                         'users': currentUsers
                     }).then(() => {
-                        rdb_joinRoom(roomId, params.uid);
-                        callback && callback();
+                        rdb_joinRoom(roomId, params.uid, callback);
                     }).catch();
                 } else {
                     callback && callback();
@@ -75,7 +74,7 @@ export const fs_getRoomList = (callback) => {
             querySnapshot.forEach(doc=>{
                 roomList[doc.id] = doc.data();
             });
-            callback && callback(roomList);
+            callback(roomList);
         })
         .catch();
 }
