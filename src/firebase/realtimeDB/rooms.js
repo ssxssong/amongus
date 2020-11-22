@@ -1,12 +1,14 @@
 import {rdb} from "../Init";
+import firebase from "firebase";
 
-const ROOMS = '/rooms/';
-const AVATARS = '/avatars/';
-const POSITION = '/position'
+export const ROOMS = '/rooms/';
+export const AVATARS = '/avatars/';
+export const POSITION = '/position/';
+export const STATUS = '/status/';
 
 export const rdb_createRoom = (roomId, uid) => {
-    const userStatusDatabaseRef = rdb.ref(ROOMS + roomId + AVATARS + uid);
-    userStatusDatabaseRef.set({
+    const avatarRef = rdb.ref(ROOMS + roomId + AVATARS + uid);
+    avatarRef.set({
         position : {
             x: 50,
             y: 50
@@ -32,9 +34,9 @@ export const rdb_leaveRoom = (roomId, uid) => {
 export const rdb_update_position = (roomId, uid, position) => {
     const userStatusDatabaseRef = rdb.ref(ROOMS + roomId + AVATARS + uid + POSITION);
     userStatusDatabaseRef.set({
-            x: position.x,
-            y: position.y
-    })
+        x: position.x,
+        y: position.y
+    });
 }
 
 export const rdb_room_listener = (roomId, roomDataGetter) => {

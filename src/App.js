@@ -24,10 +24,6 @@ const App = (props) => {
         (user && !props.stored) && props.storeUser(user);
     });
 
-    if(props.user) {
-        rdb_user_connection(props.user.uid);
-    }
-
     const current_path = window.location.pathname;
     const showHeader = (
       current_path !== locationType.HOME &&

@@ -6,7 +6,7 @@ import {fs_leaveRoom} from "../../../firebase/firestore/rooms";
 import {rdb_leaveRoom, rdb_subscribe_roomData, rdb_unsubscribe_roomData} from "../../../firebase/realtimeDB/rooms";
 import {
     rdb_subscribe_usersConnectionData,
-    rdb_unsubscribe_usersConnectionData
+    rdb_unsubscribe_usersConnectionData, rdb_user_connection
 } from "../../../firebase/realtimeDB/connection";
 import {locationType} from "../../../utils/constatns";
 
@@ -22,8 +22,8 @@ const Patio = props => {
     const [showLobby, setShowLobby] = useState(false);
     useEffect(()=>{
         rdb_subscribe_roomData(props.myRoomId, setRoomData);
-        rdb_subscribe_usersConnectionData(props.myRoomId, props.deletePosition);
-
+        rdb_user_connection(props.myRoomId, props.user.uid);
+        rdb_subscribe_usersConnectionData(props.myRoomId, props.user.uid, props.deletePosition);
         return ()=> {
             rdb_unsubscribe_roomData(props.myRoomId);
             rdb_unsubscribe_usersConnectionData();

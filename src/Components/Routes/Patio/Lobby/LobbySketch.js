@@ -1,6 +1,5 @@
 import React from "react";
 import Sketch from "react-p5";
-import {rdb} from "../../../../firebase/Init";
 import {rdb_update_position} from "../../../../firebase/realtimeDB/rooms"
 
 let CANVAS_SIZE;
@@ -12,7 +11,6 @@ const LobbySketch = props => {
     if(props.roomData.avatars) {
         if (props.roomData.avatars[props.uid]) {
             position = props.roomData.avatars[props.uid].position;
-            console.log(position);
         }
     }
 
@@ -40,10 +38,10 @@ const LobbySketch = props => {
         }
 
         if (props.roomData.avatars) {
-            Object.keys(props.roomData.avatars).map((user) => {
-                p5.ellipse(props.roomData.avatars[user].position.x, props.roomData.avatars[user].position.y, 50, 50);
-                console.log(props.roomData.avatars)
-            })
+                Object.keys(props.roomData.avatars).map((user) => {
+                    p5.ellipse(props.roomData.avatars[user].position.x, props.roomData.avatars[user].position.y, 50, 50);
+                    // console.log(props.roomData.avatars)
+                })
         }
     }
 
