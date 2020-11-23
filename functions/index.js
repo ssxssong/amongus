@@ -3,76 +3,89 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 const fs = admin.firestore();
 
+const userConnectionTypes = {
+    ONLINE: 'online',
+    OFFLINE: 'offline'
+}
+const userStateTypes = {
+    EXIT: 'EXIT',
+    RELOADED: 'RELOADED',
+    RE_TRIGGERED: 'RE_TRIGGERED'
+}
 
-exports.TestFunc = functions.database.ref('/rooms/{roomId}/status/{uid}/')
-    .onUpdate((change, context)=> {
-        if (change.after.val().state === 'offline') {
-            const t_triggered = change.after.val().last_changed;
-            const ref = change.after.ref;
-            const uid = context.params.uid;
-            const roomId = context.params.roomId;
-            setTimeout(()=>{
-                ref.once('value')
-                    .then((snapshot) => {
-                        let result;
-                        if (snapshot.val().state === 'offline') {
-                            const T_toCheck = snapshot.val().last_changed;
-                            const T_criterion = Date.now();
-                            result = T_criterion - T_toCheck > 15000 ? 'USER_EXIT' : 'RE_TRIGGERED';
-                        } else {
-                            result = 'USER_RELOADED';
-                        }
+const getUserState = async (ref)=> {
+    const snapshot = await ref.once('value');
+    let userState = null;
+    if (snapshot.val().state === userConnectionTypes.OFFLINE) {
+        const T_toCheck = snapshot.val().last_changed;
+        const T_criterion = Date.now();
+        userState = T_criterion - T_toCheck > 15000 ?
+            userStateTypes.EXIT :
+            userStateTypes.RE_TRIGGERED;
+    } else if (snapshot.val().state === userConnectionTypes.ONLINE) {
+        userState = userStateTypes.RELOADED;
+    }
+    return userState;
+}
 
-                        return result;
-                    })
-                    .then((result)=>{
-                        console.log('RESULT', result);
-                        if (result === 'USER_EXIT') {
-                            // console.log('ref.parent', ref.parent.toJSON()); // status
-                            // console.log('ref.parent.parent', ref.parent.parent.toJSON()); // roomId
+const findUserFromFirestore = async (roomId, uid) => {
+    const doc = await fs.collection('ROOMS').doc(roomId).get();
+    let updatedUsers = null;
+    if (doc.exists) {
+        const users = doc.data().users;
+        let indexToDelete = null;
+        users.forEach((user, i) => {
+            if (user.uid === uid) {
+                indexToDelete = i;
+            }
+        });
+        users.splice(indexToDelete, 1);
+        updatedUsers = users;
+    } else throw new Error("doc does not exist.");
 
-                            // remove user from fs room
-                            return fs.collection('ROOMS').doc(roomId).get()
-                        } else {
-                            console.log('THROWING ERR')
-                            throw new Error('user not exited.');
-                        }
-                    })
-                    .then((doc) => {
-                        console.log('##### deleting FS room');
-                        if (doc.exists) {
-                            const users = doc.data().users;
-                            let indexToDelete = null;
-                            users.forEach((user, i) => {
-                                if (user.uid === uid) {
-                                    indexToDelete = i;
-                                }
-                            });
-                            users.splice(indexToDelete, 1);
-                            return fs.collection('ROOMS').doc(roomId).update({users: users})
-                        } else {
-                            throw new Error('???')
-                        }
-                    })
-                    .then(()=>{
-                        console.log('deleting FS room #####');
-                        // remove user from rdb room
-                        console.log('##### deleting rdb room');
-                        return ref.parent.parent.child('avatars').child(uid).remove()
-                    })
-                    .then((res)=>{
-                        console.log('deleting rdb room #####');
-                        return 'SUCCESS';
-                    })
-                    .then((res)=>{
-                        console.log(res);
-                        return null;
-                    })
-                    .catch((err)=>{
-                        console.log(err);
-                    });
-            }, 15000);
-        } else {
-            return null;
-        }
-    })
+    return updatedUsers;
+}
+
+
+const removeUserFromRealtimeDB = async (ref) => {
+    return ref.parent.remove().then(()=>console.log('[removeUserFromRealtimeDB] success')).catch('[removeUserFromRealtimeDB]_err');
+}
+
+const after15sec = async (ref, roomId, uid) => {
+    const userState = await getUserState(ref);
+    if (userState === null || userState === undefined) {
+        throw new Error(`userState : ${userState}`);
+    } else if (userState === userStateTypes.EXIT) {
+        console.log('## ref.parent',ref.parent,'ref.parent ##');
+        const remove_from_rdb = await ref.parent.remove();
+        const updatedUsers = await findUserFromFirestore(roomId, uid);
+        const remove_from_fs = await fs.collection('ROOMS').doc(roomId).update({users: updatedUsers})
+        console.log('## remove_from_rdb', remove_from_rdb , 'remove_from_rdb ##');
+        console.log('## remove_from_fs', remove_from_fs , 'remove_from_fs ##');
+
+    } else {
+        console.log('Do nothing',userState);
+    }
+}
+
+
+const manageRoom = (change, context) => {
+    if (change.after.val().state === 'offline') {
+        const ref = change.after.ref;
+        const uid = context.params.uid;
+        const roomId = context.params.roomId;
+        setTimeout(()=>{
+            after15sec(ref, roomId, uid)
+                .then(()=>console.log("done"))
+                .catch((err)=>console.log("###### error", err, "error ######"));
+        }, 15000);
+    } else {
+        console.log("DO NOTHING: User is 'online'");
+    }
+};
+
+
+
+
+exports.watch_UserDisconnection = functions.database.ref('/rooms/{roomId}/{uid}/status')
+    .onUpdate(manageRoom);

@@ -19,14 +19,13 @@ import {rdb} from "../../../firebase/Init";
 const Patio = props => {
     console.log('[Patio]');
     const [roomData, setRoomData] = useState(null);
-    const [showLobby, setShowLobby] = useState(false);
     useEffect(()=>{
         rdb_subscribe_roomData(props.myRoomId, setRoomData);
         rdb_user_connection(props.myRoomId, props.user.uid);
-        rdb_subscribe_usersConnectionData(props.myRoomId, props.user.uid, props.deletePosition);
+        // rdb_subscribe_usersConnectionData(props.myRoomId, props.user.uid, props.deletePosition);
         return ()=> {
             rdb_unsubscribe_roomData(props.myRoomId);
-            rdb_unsubscribe_usersConnectionData();
+            // rdb_unsubscribe_usersConnectionData();
         }
     }, []);
 
@@ -57,6 +56,12 @@ const Patio = props => {
             myPosition={props.position}/>}
 
         <button onClick={leaveRoom}>Leave</button>
+        <button onClick={()=>{
+            console.log(props.myRoomId)
+            rdb.ref('/rooms/' + props.myRoomId).once('value').then((s)=>{
+                console.log(s.val());
+            })
+        }}>TEST</button>
     </div>;
 };
 
