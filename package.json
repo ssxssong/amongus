@@ -50,5 +50,6 @@
   },
   "devDependencies": {
     "react-alert-template-basic": "^1.0.0"
-  }
+  },
+  "homepage": "./"
 }

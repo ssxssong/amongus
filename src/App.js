@@ -17,7 +17,7 @@ import {useAuthState} from "react-firebase-hooks/auth";
 import {connect} from "react-redux";
 import {signOut} from "./firebase/auth/auth";
 
-
+import {BrowserRouter} from 'react-router-dom';
 const App = (props) => {
     console.log('[AppWrap]');
     const [user] = useAuthState(auth);

@@ -15,11 +15,11 @@ import App from './App';
 const app = (
     <Provider store={rootStore}>
         <PersistGate loading={null} persistor={persistor}>
-            <BrowserRouter basename='/'>
                 <Beforeunload onBeforeunload={(e) => {}}>
-                    <App/>
+                    <BrowserRouter basename='/'>
+                        <App/>
+                    </BrowserRouter>
                 </Beforeunload>
-            </BrowserRouter>
         </PersistGate>
     </Provider>
 );
