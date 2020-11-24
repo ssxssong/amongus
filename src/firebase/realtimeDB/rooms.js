@@ -1,5 +1,4 @@
 import {rdb} from "../Init";
-import firebase from "firebase";
 
 export const ROOMS = '/rooms/';
 export const AVATARS = '/avatars/';
@@ -59,4 +58,8 @@ export const rdb_subscribe_roomData = (roomId, callback) => {
 export const rdb_unsubscribe_roomData = (roomId) => {
     const roomRef = rdb.ref(ROOMS + roomId);
     roomRef.off();
+}
+
+export const rdb_clear_db = () => {
+    rdb.ref('/').remove();
 }

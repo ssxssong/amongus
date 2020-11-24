@@ -13,55 +13,64 @@ import {locationType} from "../../../utils/constatns";
 import RoomData from "./RoomData/RoomData";
 import LobbySketch from "./Lobby/LobbySketch";
 import KeyManager from "./KeyManager/KeyManager";
-import {rdb} from "../../../firebase/Init";
 
 
 const Patio = props => {
     console.log('[Patio]');
     const [roomData, setRoomData] = useState(null);
+    const [leaving, setLeaving] = useState(false);
     useEffect(()=>{
-        rdb_subscribe_roomData(props.myRoomId, setRoomData);
-        rdb_user_connection(props.myRoomId, props.user.uid);
-        // rdb_subscribe_usersConnectionData(props.myRoomId, props.user.uid, props.deletePosition);
-        return ()=> {
-            rdb_unsubscribe_roomData(props.myRoomId);
-            // rdb_unsubscribe_usersConnectionData();
+        if (props.myRoomId && props.user) {
+            rdb_subscribe_roomData(props.myRoomId, setRoomData);
+            rdb_user_connection(props.myRoomId, props.user.uid);
+            // rdb_subscribe_usersConnectionData(props.myRoomId, props.user.uid, props.deletePosition);
+            return ()=> {
+                rdb_unsubscribe_roomData(props.myRoomId);
+                // rdb_unsubscribe_usersConnectionData();
+            }
         }
     }, []);
 
-    if (props.locatedAt !== locationType.PATIO) {
+    if (props.locatedAt !== locationType.PATIO && window.location.pathname !== locationType.PATIO) {
         console.log('[RELOCATION]');
         props.history.push(props.locatedAt);
         return null;
     }
 
     const leaveRoom = () => {
-        props.setLocation(locationType.FOYER);
-        rdb_leaveRoom(props.myRoomId, props.user.uid);
-        fs_leaveRoom(props.myRoomId, props.user.uid, {
-            deletePosition: props.deletePosition,
-            go: () => props.history.push(locationType.FOYER)
-        });
+        if (props.myRoomId && props.user.uid) {
+            props.setLocation(locationType.FOYER);
+            rdb_leaveRoom(props.myRoomId, props.user.uid);
+            fs_leaveRoom(props.myRoomId, props.user.uid, {
+                deletePosition: props.deletePosition,
+                go: () => props.history.push(locationType.FOYER)
+            });
+        }
     };
 
     return <div className={classes.Patio}>
-        <RoomData/>
+        {props.user && <RoomData/>}
 
-        {roomData &&
+        {(roomData && props.user && props.myRoomId) &&
         <KeyManager
             component={LobbySketch}
             roomData={roomData}
             uid={props.user.uid}
             myRoomId={props.myRoomId}
-            myPosition={props.position}/>}
+            myPosition={props.position}
+            leaving = {leaving}/>}
 
-        <button onClick={leaveRoom}>Leave</button>
-        <button onClick={()=>{
-            console.log(props.myRoomId)
-            rdb.ref('/rooms/' + props.myRoomId).once('value').then((s)=>{
-                console.log(s.val());
-            })
-        }}>TEST</button>
+        {!leaving ? <button onClick={() => {
+                setLeaving(!leaving);
+            }}>Leave</button>
+            :
+            <div>
+                <button onClick={leaveRoom}>Y</button>
+                <button onClick={() => {
+                    setLeaving(!leaving)
+                }}>N
+                </button>
+            </div>}
     </div>;
 };
 

@@ -6,6 +6,7 @@ import Home from "./Home/Home";
 import Foyer from "./Foyer/Foyer";
 import Corridor from "./Corridor/Corridor";
 import Patio from "./Patio/Patio";
+import Admin from "../Admin/Admin";
 
 
 const Routes = props => {
@@ -14,6 +15,7 @@ const Routes = props => {
         <Route path={locationType.FOYER} exact component={Foyer} history={props.history}/>
         <Route path={locationType.CORRIDOR} exact component={Corridor} history={props.history}/>
         <Route path={locationType.PATIO} exact component={Patio} history={props.history}/>
+        <Route path={locationType.ADMIN} exact component={Admin} history={props.history}/>
     </Switch>;
 };
 

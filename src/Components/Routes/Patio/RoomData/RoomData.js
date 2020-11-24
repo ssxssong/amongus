@@ -7,7 +7,7 @@ import {connect} from "react-redux";
 const RoomData = props => {
     // SUBSCRIBE TO FIRESTORE_ROOMDATA
     useEffect(()=>{
-        if (props.myRoomId) {
+        if (props.myRoomId && props.user.uid) {
             let unsubscribe = fs_getRoomData(
                 props.myRoomId,
                 props.user.uid,

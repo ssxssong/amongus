@@ -2,7 +2,8 @@ import {actionTypes} from './actions';
 
 const initialState = {
     user: null,
-    stored: false
+    stored: false,
+    trying: false
 };
 
 const reducer = (state = initialState, action) => {
@@ -14,14 +15,23 @@ const reducer = (state = initialState, action) => {
                 user: action.user,
                 stored: true
             }
-        case actionTypes.SET_DEFAULT:
+        case actionTypes.TRYING:
             return {
                 ...state,
-                user: {
-                    uid: null,
-                    displayName: null,
-                },
-                stored: false
+                trying: true
+            }
+        case actionTypes.FAILED:
+            return {
+                ...state,
+                trying: false
+            }
+        case actionTypes.SET_DEFAULT:
+            console.log('reducer: setting auth default')
+            return {
+                ...state,
+                user: null,
+                stored: false,
+                trying: false
             }
         default: break;
     }

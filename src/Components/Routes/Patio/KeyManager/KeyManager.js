@@ -34,7 +34,8 @@ const KeyManager = props => {
                 roomData={props.roomData}
                 uid={props.uid}
                 myRoomId={props.myRoomId}
-                myPosition={props.myPosition}/>
+                myPosition={props.myPosition}
+                leaving={props.leaving}/>
         </div>
     );
 };

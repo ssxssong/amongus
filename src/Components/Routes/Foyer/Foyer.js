@@ -22,13 +22,13 @@ const Foyer = props => {
     const modToggler = () => setMod(!mod);
 
     let foyer = null;
-    if (mod) {
-        if (props.locatedAt !== locationType.FOYER) {
-            console.log('[RELOCATION]');
-            props.history.push(props.locatedAt);
-            return null;
-        }
 
+    if (props.locatedAt !== locationType.FOYER) {
+        console.log('[RELOCATION]');
+        props.history.push(props.locatedAt);
+    }
+
+    if (mod) {
         foyer = <div className={classes.Foyer}>
             <input className={classes.NicknameInput}
                    value={nick}
@@ -40,8 +40,8 @@ const Foyer = props => {
             <FindGame nick={nick} history={props.history}/>
             <Status/>
             <button onClick={() => {
-                props.setLocation(locationType.INTRO);
-                props.history.push(locationType.INTRO);
+                props.setLocation(locationType.HOME);
+                props.history.push(locationType.HOME);
             }}>back
             </button>
         </div>;

@@ -10,7 +10,6 @@ const Home = props => {
         <div className={classes.SignIn}>
             {!props.user? <SignIn history={props.history}/> : <Start history={props.history}/>}
         </div>
-
     </div>;
 };
 

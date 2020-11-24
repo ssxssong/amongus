@@ -2,7 +2,6 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 const fs = admin.firestore();
-
 const userConnectionTypes = {
     ONLINE: 'online',
     OFFLINE: 'offline'
@@ -51,6 +50,9 @@ const removeUserFromRealtimeDB = async (ref) => {
     return ref.parent.remove().then(()=>console.log('[removeUserFromRealtimeDB] success')).catch('[removeUserFromRealtimeDB]_err');
 }
 
+const deleteUser = (uid) => {
+}
+
 const after15sec = async (ref, roomId, uid) => {
     const userState = await getUserState(ref);
     if (userState === null || userState === undefined) {
@@ -59,9 +61,11 @@ const after15sec = async (ref, roomId, uid) => {
         console.log('## ref.parent',ref.parent,'ref.parent ##');
         const remove_from_rdb = await ref.parent.remove();
         const updatedUsers = await findUserFromFirestore(roomId, uid);
-        const remove_from_fs = await fs.collection('ROOMS').doc(roomId).update({users: updatedUsers})
+        const remove_from_fs = await fs.collection('ROOMS').doc(roomId).update({users: updatedUsers});
+        const delete_User = await admin.auth().deleteUser(uid);
         console.log('## remove_from_rdb', remove_from_rdb , 'remove_from_rdb ##');
         console.log('## remove_from_fs', remove_from_fs , 'remove_from_fs ##');
+        console.log('## delete_User_from_auth', delete_User , 'delete_User_from_auth ##');
 
     } else {
         console.log('Do nothing',userState);
@@ -76,13 +80,14 @@ const manageRoom = (change, context) => {
         const roomId = context.params.roomId;
         setTimeout(()=>{
             after15sec(ref, roomId, uid)
-                .then(()=>console.log("done"))
+                .then((r)=>console.log("done", r))
                 .catch((err)=>console.log("###### error", err, "error ######"));
         }, 15000);
     } else {
         console.log("DO NOTHING: User is 'online'");
     }
 };
+
 
 
 

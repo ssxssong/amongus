@@ -1,5 +1,6 @@
 import {db} from "../Init";
 import firebase from "firebase/app";
+import 'firebase/auth';
 import {positionType} from "../../utils/constatns";
 
 import {rdb_createRoom, rdb_joinRoom} from "../realtimeDB/rooms";
@@ -40,7 +41,7 @@ export const fs_joinRoom = (roomId, params, callback) => {
         .then((doc)=>{
             if (doc.exists) {
                 const currentUsers = doc.data().users;
-                console.log('currentUsers type', typeof currentUsers.users);
+                console.log('currentUsers type', typeof currentUsers);
                 const oldUser = currentUsers.some((userObj) => {
                     return userObj.uid === params.uid;
                 });
@@ -56,7 +57,7 @@ export const fs_joinRoom = (roomId, params, callback) => {
                     roomRef.update({
                         'users': currentUsers
                     }).then(() => {
-                        rdb_joinRoom(roomId, params.uid, callback);
+                        rdb_joinRoom(roomId, params.uid);
                     }).catch();
                 } else {
                     callback && callback();
@@ -107,7 +108,7 @@ export const fs_leaveRoom = (roomId, uid, callbacks) => {
                             callbacks.deletePosition();
                             callbacks.go();
                         })
-                        .catch();
+                        .catch(err => console.log(err));
                 }
                 // else, keep room doc
                 else {
@@ -126,13 +127,13 @@ export const fs_leaveRoom = (roomId, uid, callbacks) => {
                             callbacks.deletePosition();
                             callbacks.go();
                         })
-                        .catch();
+                        .catch(err => console.log(err));
                 }
             } else {
                 callbacks.go();
             }
         })
-        .catch();
+        .catch(err => console.log(err));
 }
 
 export const fs_signOutWithEscape = (callbacks) => {
@@ -147,4 +148,17 @@ export const fs_signOutWithEscape = (callbacks) => {
             window.location.reload();
         })
         .catch((error) => console.log(error));
+}
+
+export const fs_clear_db = () => {
+    console.log('CLEAR FS');
+    db.collection(collections.ROOMS).get()
+        .then((querySnapshot)=>{
+            // console.log(querySnapshot)
+            querySnapshot.forEach((doc)=>{
+                doc.ref.delete().then().catch();
+                // console.log(doc.ref)
+            });
+        })
+        .catch(err => console.log(err))
 }

@@ -10,12 +10,11 @@ const LobbySketch = props => {
     CANVAS_SIZE = {width: window.innerWidth/2, height: window.innerHeight/2};
     if(props.roomData) {
         if (props.roomData[props.uid]) {
-            position = props.roomData[props.uid].avatars.position;
+            if (props.roomData[props.uid].avatars) position = props.roomData[props.uid].avatars.position;
         }
     }
 
     const setup = (p5, canvasParentRef) => {
-
         p5.frameRate(60);
         let cnv = p5.createCanvas(CANVAS_SIZE.width, CANVAS_SIZE.height).parent(canvasParentRef);
         p5.background(255);
@@ -33,13 +32,16 @@ const LobbySketch = props => {
         if (props.AU) {position.y = position.y - 10};
         if (props.AD) {position.y = position.y + 10};
 
-        if (position) {
+        if (position && !props.leaving) {
             rdb_update_position(props.myRoomId, props.uid, position);
         }
 
         if (props.roomData) {
-            Object.keys(props.roomData).forEach((user)=>{
-                p5.ellipse(props.roomData[user].avatars.position.x, props.roomData[user].avatars.position.y, 50, 50);
+            Object.keys(props.roomData).forEach((user) => {
+                if (props.roomData[user].avatars)
+                {
+                    p5.ellipse(props.roomData[user].avatars.position.x, props.roomData[user].avatars.position.y, 50, 50);
+                }
             })
         }
     }

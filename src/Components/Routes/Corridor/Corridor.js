@@ -11,10 +11,9 @@ const Corridor = props => {
     const [isLoaded, setIsLoaded] = useState(false);
     useEffect(()=>!isLoaded && setIsLoaded(true), [isLoaded]);
 
-    if (props.locatedAt !== locationType.CORRIDOR) {
+    if (props.locatedAt !== locationType.CORRIDOR && window.location.pathname !== locationType.CORRIDOR) {
         console.log('[RELOCATION]');
         props.history.push(props.locatedAt);
-        return null;
     }
 
     const getRoomList = () => {

@@ -5,6 +5,7 @@ export const locationType = {
     PATIO: '/patio',
     ESCAPE: '/escape',
     HOME: '/',
+    ADMIN: '/admin'
 };
 
 export const rdb_path = {

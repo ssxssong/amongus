@@ -56,16 +56,16 @@ const reducer = (state = initialState, action) => {
         case actionTypes.SET_DEFAULT:
             return {
                 ...state,
+                locatedAt: locationType.HOME,
                 position: null,
                 nickname: '',
                 myRoomId: null,
                 roomData: null,
-                locatedAt: locationType.HOME
             }
         case actionTypes.NOTICE_ESCAPING:
             return {
                 ...state,
-                escaping: true
+                escaping: true,
             }
         case actionTypes.NOTICE_NOT_ESCAPING:
             return {
