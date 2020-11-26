@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import classes from './App.module.css';
 
 // Compo
@@ -21,6 +21,8 @@ import {BrowserRouter} from 'react-router-dom';
 const App = (props) => {
     console.log('[AppWrap]');
     const [user] = useAuthState(auth);
+    // const [isRightWay, setIsRightWay] = useState(false);
+
     useEffect(()=>{
         if (!props.escaping) {
             (user && !props.stored) && props.storeUser(user);
@@ -34,7 +36,6 @@ const App = (props) => {
         await props.setStatusDefault();
         await props.setLocation(locationType.HOME);
         await signOut(()=>{window.location.href = locationType.HOME;});
-
     }
 
     return (
