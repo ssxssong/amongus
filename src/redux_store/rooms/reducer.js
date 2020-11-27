@@ -5,17 +5,15 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
-    console.log('rooms reducer');
     switch (action.type) {
         case actionTypes.STORE_ROOM_LIST:
             return {
                 ...state,
-                roomList: action.room
+                roomList: action.roomList
             }
         case actionTypes.SET_DEFAULT:
             return {
-                ...state,
-                roomList: null
+                ...initialState
             }
         default: break;
     }

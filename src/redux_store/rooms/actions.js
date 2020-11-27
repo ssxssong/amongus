@@ -4,11 +4,10 @@ export const actionTypes = {
 }
 
 export const actionCreator = {
-    store_roomList: (room) => {
-        return {type: actionTypes.STORE_ROOM_LIST, room: room}
+    store_roomList: (roomList) => {
+        return {type: actionTypes.STORE_ROOM_LIST, roomList: roomList}
     },
     set_default: () => {
-        console.log('setting deafault rooms');
         return {type: actionTypes.SET_DEFAULT}
     }
 }

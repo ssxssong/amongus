@@ -45,7 +45,6 @@ const findUserFromFirestore = async (roomId, uid) => {
     return updatedUsers;
 }
 
-
 const removeUserFromRealtimeDB = async (ref) => {
     return ref.parent.remove().then(()=>console.log('[removeUserFromRealtimeDB] success')).catch('[removeUserFromRealtimeDB]_err');
 }
@@ -72,7 +71,6 @@ const after15sec = async (ref, roomId, uid) => {
     }
 }
 
-
 const manageRoom = (change, context) => {
     if (change.after.val().state === 'offline') {
         const ref = change.after.ref;
@@ -87,10 +85,6 @@ const manageRoom = (change, context) => {
         console.log("DO NOTHING: User is 'online'");
     }
 };
-
-
-
-
 
 exports.watch_UserDisconnection = functions.database.ref('/rooms/{roomId}/{uid}/status')
     .onUpdate(manageRoom);

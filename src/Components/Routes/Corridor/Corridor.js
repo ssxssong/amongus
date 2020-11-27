@@ -1,28 +1,25 @@
 import React, {useState, useEffect} from 'react';
-import {connect} from 'react-redux';
-import classes from './Corridor.module.css';
-import {actionCreator as roomsAC} from "../../../redux_store/rooms/actions";
+import {locationType} from "../../../const/const";
+import {connect} from "react-redux";
+import useLocationCheck from "../../../customHooks/useLocationCheck";
 import {actionCreator as statusAC} from "../../../redux_store/status/actions";
-import {fs_getRoomList, fs_joinRoom} from "../../../firebase/firestore/rooms";
-import {locationType} from "../../../utils/constatns";
+import {actionCreator as roomsAC} from "../../../redux_store/rooms/actions";
+import classes from './Corridor.module.css';
+import {fs_getRoomData, fs_getRoomList, fs_onRoomData, fs_updateRoomData_user} from "../../../firebase/firestore/rooms";
+import {rdb_setRoomData_user} from "../../../firebase/realtimeDB/rooms";
 
 const Corridor = props => {
-    console.log('[Corridor]');
+    useLocationCheck(props.locatedAt, locationType.PATIO, props.history);
     const [isLoaded, setIsLoaded] = useState(false);
     useEffect(()=>!isLoaded && setIsLoaded(true), [isLoaded]);
 
-    if (props.locatedAt !== locationType.CORRIDOR && window.location.pathname !== locationType.CORRIDOR) {
-        console.log('[RELOCATION]');
-        props.history.push(props.locatedAt);
-    }
-
-    const getRoomList = () => {
-        console.log('[GETTING ROOMLIST]')
-        fs_getRoomList(props.storeRoomList);
+    const getRoomList = async () => {
+        const roomList = await fs_getRoomList()
+        props.storeRoomList(roomList)
     };
     !isLoaded && getRoomList();
 
-    const joinRoom = (e) => {
+    const joinRoom = async (e) => {
         let roomId = null;
         roomId = e.target.className === classes.Room ?
             e.target.id :
@@ -32,9 +29,24 @@ const Corridor = props => {
             nickname: props.nickname,
             displayName: props.user.displayName
         };
-        props.storeMyRoomId(roomId);
-        props.setLocation(locationType.PATIO);
-        fs_joinRoom(roomId, params, ()=> props.history.push(locationType.PATIO));
+        const doc = await fs_getRoomData(roomId)
+        if (doc.exists) {
+            const currentUsers = doc.data().users
+            const oldUser = currentUsers.some((userObj) => {
+                return userObj.uid === params.uid
+            })
+            if (!oldUser) {
+                currentUsers.push({
+                    uid: props.user.uid,
+                    nickname: props.nickname,
+                    displayName: props.user.displayName
+                })
+                const msg = await fs_updateRoomData_user(roomId, currentUsers);
+                await rdb_setRoomData_user(roomId, props.user.uid)
+                msg && props.storeMyRoomId(roomId);
+                msg && props.setLocation(locationType.PATIO);
+            }
+        }
     }
 
     let roomList = null;
@@ -65,26 +77,25 @@ const Corridor = props => {
                 props.history.push(locationType.FOYER);
             }}>back</button>
         </div>
-
     );
-};
+}
 
-const mapStateToProps = state => {
+
+const MSTP = state => {
     return {
         user: state.auth.user,
-        roomList: state.rooms.roomList,
-        myRoomId: state.status.myRoomId,
         nickname: state.status.nickname,
-        locatedAt: state.status.locatedAt
+        locatedAt: state.status.locatedAt,
+        roomList: state.rooms.roomList
     }
 }
 
-const mapDispatchToProps = dispatch => {
+const MDTP = dispatch => {
     return {
         storeRoomList: (room) => dispatch(roomsAC.store_roomList(room)),
-        storeMyRoomId: (roomId)=> dispatch(statusAC.setMyRoomId(roomId)),
-        setLocation: (location)=> dispatch(statusAC.set_location(location))
+        storeMyRoomId: (myRoomId) => dispatch(statusAC.store_myRoomId(myRoomId)),
+        setLocation: (location)=>dispatch(statusAC.set_location(location))
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Corridor);
+export default connect(MSTP, MDTP)(Corridor)

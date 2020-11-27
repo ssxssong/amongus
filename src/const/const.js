@@ -1,16 +1,9 @@
 export const locationType = {
-    TEST: '/test',
     FOYER: '/foyer',
     CORRIDOR: '/corridor',
     PATIO: '/patio',
-    ESCAPE: '/escape',
     HOME: '',
-    ADMIN: '/admin'
 };
-
-export const rdb_path = {
-
-}
 
 export const positionType = {
     WAITING: 'WAITING',

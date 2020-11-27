@@ -1,26 +1,31 @@
 import React, {useEffect} from 'react';
 import classes from "../Patio.module.css";
-import {fs_getRoomData} from "../../../../firebase/firestore/rooms";
+import {fs_onRoomData} from "../../../../firebase/firestore/rooms";
 import {actionCreator as statusAC} from "../../../../redux_store/status/actions";
 import {connect} from "react-redux";
+import {positionType} from "../../../../const/const";
 
 const RoomData = props => {
+    console.log('[RoomData]')
     // SUBSCRIBE TO FIRESTORE_ROOMDATA
-    useEffect(()=>{
-        if (props.myRoomId && props.user.uid) {
-            let unsubscribe = fs_getRoomData(
-                props.myRoomId,
-                props.user.uid,
-                {
-                    storeRoomData: props.storeRoomData,
-                    storePosition: props.storePosition
-                });
+    useEffect(() => {
+        const unsubscribe = fs_onRoomData(props.myRoomId, {
+            next: doc => {
+                if (doc.exists) {
+                    const roomData = doc.data()
+                    console.log('listening', roomData)
+                    props.storeRoomData(roomData)
+                    roomData.users[0].uid === props.user.uid ?
+                        props.storePosition(positionType.HOSTING) :
+                        props.storePosition(positionType.JOINING)
+                }
+            },
+            error: () => console.log('listening failed')
+        })
 
-            // // clear
-            return () => unsubscribe();
-        }
+        // automatically unsubscribe when component unmount
+        return unsubscribe;
     }, []);
-
 
     let roomData = {
         'user': null,
@@ -28,7 +33,7 @@ const RoomData = props => {
     };
 
     if (props.roomData) {
-        let ctr=0;
+        let ctr = 0;
         roomData['user'] = Object.keys(props.roomData.users).sort().map((key) => {
             ctr++;
             return (
@@ -63,8 +68,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        storePosition: (position) => dispatch(statusAC.store_Position(position)),
-        storeRoomData: (roomData) => dispatch(statusAC.storeRoomData(roomData)),
+        storePosition: (position) => dispatch(statusAC.store_position(position)),
+        storeRoomData: (roomData) => dispatch(statusAC.store_roomData(roomData)),
     }
 }
 

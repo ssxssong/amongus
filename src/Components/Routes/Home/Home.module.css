@@ -6,6 +6,7 @@
     justify-content: center;
     align-items: center;
     z-index: 100;
+    font-family: 'Press Start 2P', sans-serif;
 }
 
 .Title {
@@ -16,4 +17,8 @@
 
 .SignIn {
     height: 5rem;
+}
+
+.Loading {
+    font-family: 'Andale Mono', sans-serif;
 }

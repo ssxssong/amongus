@@ -8,16 +8,3 @@
     background-color: #000000;
     overflow: hidden;
 }
-
-.ReduxState {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    z-index: 300;
-}
-
-.ReduxState > * {
-    margin: 1rem 0;
-    color: white;
-    font-size: 3rem;
-}

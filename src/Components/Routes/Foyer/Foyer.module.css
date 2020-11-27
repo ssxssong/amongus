@@ -6,15 +6,17 @@
     z-index: 100;
 }
 
+.Foyer * {
+    font-family: "Andale Mono", sans-serif;
+}
+
 .Foyer > * {
-    width: 45rem;
     height: 6rem;
     margin: 1rem 0;
     color: white;
     font-size: 4rem;
     background-color: transparent;
-    border: 2px solid white;
-    border-radius: 5px ;
+    border: none;
 }
 
 
@@ -25,7 +27,7 @@ button:active {
 }
 
 .NicknameInput {
-    width: 30rem;
+    width: 50rem;
     font-size: 3rem;
     color: white;
     text-align: center;

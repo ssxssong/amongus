@@ -1,10 +1,9 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {actionCreator} from "../../../../redux_store/status/actions";
+import {actionCreator as statusAC} from "../../../../redux_store/status/actions";
 
 
 const CreateGame = props => {
-    console.log('[CreateGame]');
     return <button onClick={()=> {
         props.modToggle();
         props.storeNickName(props.nickname);
@@ -19,7 +18,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        storeNickName: (nickname) => dispatch(actionCreator.storeNickName(nickname))
+        storeNickName: (nickname) => dispatch(statusAC.store_nickName(nickname))
     }
 }
 

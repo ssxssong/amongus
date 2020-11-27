@@ -1,9 +1,10 @@
 import React, {useState} from 'react';
 import classes from './CreateSetting.module.css';
 import {connect} from "react-redux";
-import {fs_createRoom} from "../../../../firebase/firestore/rooms";
 import {actionCreator as statusAC} from "../../../../redux_store/status/actions";
-import {locationType} from "../../../../utils/constatns";
+import {locationType} from "../../../../const/const";
+import {fs_createRoom} from "../../../../firebase/firestore/rooms";
+import {rdb_setRoomData_user} from "../../../../firebase/realtimeDB/rooms";
 
 const CreateSetting = props => {
     const [setting, setSetting] = useState({
@@ -33,21 +34,19 @@ const CreateSetting = props => {
         }
     }
 
-    const create = () => {
-        const params = {
-            user: props.user,
-            nickname: props.nickname,
+    const create = async () => {
+        const data = {
+            users: [{
+                uid: props.user.uid,
+                nickname: props.nickname,
+                displayName: props.user.displayName
+            }],
             setting: setting,
         };
-        fs_createRoom(
-            params,
-            {
-                storeMyRoomId: props.storeMyRoomId,
-                go: ()=> {
-                    props.setLocation(locationType.PATIO);
-                    props.history.push(locationType.PATIO);
-                }
-            });
+        const myRoomId = await fs_createRoom(data)
+        await rdb_setRoomData_user(myRoomId, props.user.uid)
+        props.storeMyRoomId(myRoomId)
+        props.setLocation(locationType.PATIO)
     }
 
     let tempKey = 0
@@ -81,7 +80,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        storeMyRoomId: (roomId) => dispatch(statusAC.setMyRoomId(roomId)),
+        storeMyRoomId: (roomId) => dispatch(statusAC.store_myRoomId(roomId)),
         setLocation: (location)=> dispatch(statusAC.set_location(location)),
     }
 }

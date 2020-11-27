@@ -1,23 +1,29 @@
-import React from 'react';
+import React, {Suspense} from 'react';
 import {Route, Switch} from "react-router-dom";
-import {locationType} from "../../utils/constatns";
+import {locationType} from "../../const/const";
 
 import Home from "./Home/Home";
 import Foyer from "./Foyer/Foyer";
 import Corridor from "./Corridor/Corridor";
 import Patio from "./Patio/Patio";
-import Admin from "../Admin/Admin";
-import Test from "./Test/Test";
+import {connect} from "react-redux";
 
 const Routes = props => {
-    return <Switch>
-        <Route path={locationType.TEST} exact component={Test} history={props.history}/>
-        <Route path={locationType.FOYER} exact component={Foyer} history={props.history}/>
-        <Route path={locationType.CORRIDOR} exact component={Corridor} history={props.history}/>
-        <Route path={locationType.PATIO} exact component={Patio} history={props.history}/>
-        <Route path={locationType.ADMIN} exact component={Admin} history={props.history}/>
-        <Route path={locationType.HOME} exact component={Home} history={props.history}/>
-    </Switch>;
+    return <Suspense fallback={<div>Loading...</div>}>
+        <Switch>
+            {props.user && <Route path={locationType.FOYER} exact component={Foyer}/>}
+            {props.user && <Route path={locationType.CORRIDOR} exact component={Corridor}/>}
+            {props.user && <Route path={locationType.PATIO} exact component={Patio}/>}
+            <Route path={locationType.HOME} exact component={Home}/>
+        </Switch>
+    </Suspense>
 };
 
-export default Routes;
+
+const MSTP = state => {
+    return {
+        user: state.auth.user,
+    }
+}
+
+export default connect(MSTP)(Routes);

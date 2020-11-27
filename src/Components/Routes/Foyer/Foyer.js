@@ -1,47 +1,34 @@
 import React, {useState} from 'react';
+import {locationType} from "../../../const/const";
+import {connect} from "react-redux";
+import useLocationCheck from "../../../customHooks/useLocationCheck";
+import {actionCreator as statusAC} from "../../../redux_store/status/actions";
 import classes from './Foyer.module.css';
-import {connect} from 'react-redux';
-
+import CreateSetting from "./CreateSetting/CreateSetting";
 import CreateGame from "./CreateGame/CreateGame";
 import FindGame from "./FindGame/FindGame";
-import Status from "./Status/Status";
-
-import CreateSetting from "./CreateSetting/CreateSetting";
-import {actionCreator as statusAC} from "../../../redux_store/status/actions";
-import {locationType} from "../../../utils/constatns";
-
 
 const Foyer = props => {
-    console.log('[Foyer]');
+    useLocationCheck(props.locatedAt, locationType.FOYER, props.history);
     const [mod, setMod] = useState(true);
     const [nick, setNick] = useState(props.nickname);
 
-    const inputChangedHandler = (event) => {
-        setNick(event.target.value);
-    };
     const modToggler = () => setMod(!mod);
 
     let foyer = null;
-
-    if (props.locatedAt !== locationType.FOYER) {
-        console.log('[RELOCATION]');
-        props.history.push(props.locatedAt);
-    }
 
     if (mod) {
         foyer = <div className={classes.Foyer}>
             <input className={classes.NicknameInput}
                    value={nick}
-                   onChange={(e) => inputChangedHandler(e)}
+                   onChange={(event) => setNick(event.target.value)}
                    type="text"
                    placeholder='enter your nickname'/>
             <CreateGame nickname={nick} history={props.history}
                         modToggle={modToggler}/>
             <FindGame nick={nick} history={props.history}/>
-            <Status/>
             <button onClick={() => {
                 props.setLocation(locationType.HOME);
-                props.history.push(locationType.HOME);
             }}>back
             </button>
         </div>;
@@ -53,17 +40,17 @@ const Foyer = props => {
     return (<>{foyer}</>);
 };
 
-const mapStateToProps = state => {
+const MSTP = state => {
     return {
-        nickname: state.status.nickname,
         locatedAt: state.status.locatedAt,
+        nickname: state.status.nickname,
     }
 }
 
-const mapDispatchToProps = dispatch => {
+const MDTP = dispatch => {
     return {
-        setLocation: (location) => dispatch(statusAC.set_location(location))
+        setLocation: (location)=>dispatch(statusAC.set_location(location))
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Foyer);
+export default connect(MSTP, MDTP)(Foyer)

@@ -1,19 +1,23 @@
 import {rdb} from "../Init";
-import {fs_leaveRoom} from "../firestore/rooms";
 import firebase from "firebase/app";
-import {AVATARS, ROOMS, STATUS} from "./rooms";
+import {LOBBY, USERS, STATUS} from "./rooms";
 
-export const rdb_user_connection = (roomId, uid) => {
-    const userStatusDatabaseRef = rdb.ref(ROOMS + roomId +'/'+ uid + STATUS );
+export const connectionType = {
+    online: 'online',
+    offline: 'offline'
+}
+
+export const rdb_sub_user_connection = (roomId, uid) => {
+    const userStatusDatabaseRef = rdb.ref(LOBBY + roomId + USERS + uid + STATUS );
     const isOfflineForDatabase = {
-        state: 'offline',
+        state: connectionType.offline,
         last_changed: firebase.database.ServerValue.TIMESTAMP,
     };
     const isOnlineForDatabase = {
-        state: 'online',
+        state: connectionType.online,
         last_changed: firebase.database.ServerValue.TIMESTAMP,
     };
-    rdb.ref('.info/connected')
+    return rdb.ref('.info/connected')
         .on('value', function(snapshot) {
         if (snapshot.val() === false) {
             return;
@@ -26,15 +30,6 @@ export const rdb_user_connection = (roomId, uid) => {
 };
 
 
-
-export const rdb_subscribe_usersConnectionData = (roomId, uid, deletePosition) => {
-    const statusRef = rdb.ref(ROOMS + roomId +'/'+ uid + STATUS);
-    statusRef.on('value', (snapshot) => {
-        const users = snapshot.val();
-    });
-};
-
-export const rdb_unsubscribe_usersConnectionData = () => {
-    const statusRef = rdb.ref('/status/users');
-    statusRef.off();
+export const rdb_unsub_user_connection = () => {
+    return rdb.ref('.info/connected').off()
 }

@@ -1,6 +1,6 @@
 .Header {
     width: 100vw;
-    height: 10rem;
+    height: 10vh;
     position: absolute;
     top: 0;
     left: 50%;
@@ -12,3 +12,6 @@
     align-items: center;
 }
 
+.DEV div {
+    padding: 0
+}

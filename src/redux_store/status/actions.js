@@ -1,53 +1,29 @@
 export const actionTypes = {
-    POSITIONNING: 'POSITIONNING',
-    SET_MYROOM_ID: 'SET_MYROOM_ID',
-    DELETE_MYROOM_ID: 'DELETE_MYROOM',
-    STORE_NICKNAME: 'STORE_NICKNAME',
-    STORE_ROOM_DATA: 'STORE_ROOM_DATA',
-    DELETE_ROOM_DATA: 'DELETE_ROOM_DATA',
-    DELETE_POSITION: 'DELETE_POSITION',
     SET_LOCATION: 'SET_LOCATION',
+    STORE_NICKNAME: 'STORE_NICKNAME',
     SET_DEFAULT: 'SET_DEFAULT',
-    NOTICE_ESCAPING: 'NOTICE_ESCAPING',
-    NOTICE_NOT_ESCAPING: 'NOTICE_NOT_ESCAPING',
-}
-
+    STORE_MYROOMID: 'STORE_MYROOMID',
+    STORE_POSITION: 'STORE_POSITION',
+    STORE_ROOMDATA: 'STORE_ROOMDATA',
+};
 
 export const actionCreator = {
-    store_Position: (position)=> {
-        return {type: actionTypes.POSITIONNING, position: position}
-    },
-    setMyRoomId: (roomId)=> {
-        console.log('room id is resistered.');
-        return {type: actionTypes.SET_MYROOM_ID, myRoomId: roomId}
-    },
-    storeNickName: (nickname) => {
-        return {type: actionTypes.STORE_NICKNAME, nick:nickname}
-    },
-    deleteMyRoomId: () => {
-        return {type: actionTypes.DELETE_MYROOM_ID}
-    },
-    storeRoomData: (roomData) => {
-        console.log('storing roomData');
-        return {type: actionTypes.STORE_ROOM_DATA, roomData: roomData}
-    },
-    deleteRoomData: () => {
-        return {type: actionTypes.DELETE_ROOM_DATA}
-    },
-    deletePosition: () => {
-        return {type: actionTypes.DELETE_POSITION}
+    set_default: () => {
+        return {type: actionTypes.SET_DEFAULT}
     },
     set_location: (location) => {
         return {type: actionTypes.SET_LOCATION, location: location}
     },
-    set_default: () => {
-        console.log('setting deafault status');
-        return {type: actionTypes.SET_DEFAULT}
+    store_nickName: (nickname) => {
+        return {type: actionTypes.STORE_NICKNAME, nick: nickname}
     },
-    notice_escaping: () => {
-        return {type: actionTypes.NOTICE_ESCAPING}
+    store_myRoomId: (myRoomId) => {
+        return {type: actionTypes.STORE_MYROOMID, myRoomId: myRoomId}
     },
-    notice_not_escaping: () => {
-        return {type: actionTypes.NOTICE_NOT_ESCAPING}
-    }
+    store_position: (position)=> {
+        return {type: actionTypes.STORE_POSITION, position: position}
+    },
+    store_roomData: (roomData) => {
+        return {type: actionTypes.STORE_ROOMDATA, roomData: roomData}
+    },
 }

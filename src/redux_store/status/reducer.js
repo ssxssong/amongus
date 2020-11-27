@@ -1,76 +1,43 @@
 import {actionTypes} from './actions';
-import {locationType} from "../../utils/constatns";
+import {locationType, positionType} from "../../const/const";
 
 const initialState = {
     locatedAt: locationType.HOME,
-    position: null,
     nickname: '',
     myRoomId: null,
-    roomData: null,
-    escaping: false,
+    position: positionType.WAITING,
 };
 
 const reducer = (state = initialState, action) => {
-    console.log('status reducer');
     switch (action.type) {
-        case actionTypes.POSITIONNING:
+        case actionTypes.SET_DEFAULT:
             return {
-                ...state,
-                position: action.position
-            }
-        case actionTypes.SET_MYROOM_ID:
-            return {
-                ...state,
-                myRoomId: action.myRoomId
-            }
-        case actionTypes.DELETE_MYROOM_ID:
-            return {
-                ...state,
-                myRoomId: null
-            }
-        case actionTypes.STORE_NICKNAME:
-            return {
-                ...state,
-                nickname: action.nick
-            }
-        case actionTypes.STORE_ROOM_DATA:
-            return {
-                ...state,
-                roomData: action.roomData
-            }
-        case actionTypes.DELETE_ROOM_DATA:
-            return {
-                ...state,
-                roomData: null
-            }
-        case actionTypes.DELETE_POSITION:
-            return {
-                ...state,
-                position: null
+                ...initialState
             }
         case actionTypes.SET_LOCATION:
             return {
                 ...state,
                 locatedAt: action.location
             }
-        case actionTypes.SET_DEFAULT:
+        case actionTypes.STORE_NICKNAME:
             return {
                 ...state,
-                locatedAt: locationType.HOME,
-                position: null,
-                nickname: '',
-                myRoomId: null,
-                roomData: null,
+                nickname: action.nick
             }
-        case actionTypes.NOTICE_ESCAPING:
+        case actionTypes.STORE_MYROOMID:
             return {
                 ...state,
-                escaping: true,
+                myRoomId: action.myRoomId
             }
-        case actionTypes.NOTICE_NOT_ESCAPING:
+        case actionTypes.STORE_POSITION:
             return {
                 ...state,
-                escaping: false
+                position: action.position
+            }
+        case actionTypes.STORE_ROOMDATA:
+            return {
+                ...state,
+                roomData: action.roomData
             }
         default: break;
     }

@@ -11,7 +11,7 @@
     overflow-y: scroll;
 }
 .Room {
-    background-color: #007fc7;
+    background-color: transparent;
     width: 50rem;
     height: 5rem;
     display: flex;
@@ -19,6 +19,8 @@
     justify-content: space-around;
     align-items: center;
     z-index: 200;
+    border-radius: 10px;
+    border: 1px solid white;
 }
 
 .RoomName {
